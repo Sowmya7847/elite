@@ -1,207 +1,138 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Elite Titans</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <title>Elite Titans - Auth</title>
   <style>
     body {
-      font-family: 'Cinzel', serif;
-      background-color: #f0e6d6;
-      color: #5c4033;
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-      padding: 0;
-      text-align: center;
-      transition: background 0.5s, color 0.5s;
     }
-
-    body.dark-theme {
-      background-color: #1e1e2e;
-      color: #ffffff;
-    }
-
-    .container {
-      max-width: 400px;
-      margin: 50px auto;
+    .box {
+      background: white;
       padding: 30px;
-      border-radius: 10px;
-      background-color: #fff;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      border: 2px solid #DAA520;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      width: 300px;
     }
-
-    .hidden {
-      display: none;
-    }
-
-    h2 {
-      font-size: 28px;
-      color: #DAA520;
-      font-family: 'Great Vibes', cursive;
-    }
-
-    .btn {
-      padding: 12px;
-      margin: 12px 0;
+    h2 { text-align: center; color: #3366cc; }
+    input, select, button {
       width: 100%;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 5px;
-      background-color: #DAA520;
-      color: white;
-      transition: transform 0.3s, background-color 0.3s;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-      background-color: #B8860B;
-    }
-
-    input[type="email"], input[type="password"], input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      font-size: 16px;
-      border: 1px solid #DAA520;
-      border-radius: 5px;
-      background-color: #f4e1b7;
-    }
-
-    input:focus {
-      border-color: #B8860B;
-      outline: none;
-    }
-
-    .theme-toggle {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
-      background-color: #DAA520;
-      border: none;
-      padding: 8px;
-      border-radius: 5px;
-      color: white;
-    }
-
-    .theme-toggle:hover {
-      background-color: #B8860B;
-    }
-
-    .back-btn {
-      font-size: 14px;
-      color: #DAA520;
-      text-decoration: none;
-    }
-
-    .back-btn:hover {
-      text-decoration: underline;
-    }
-
-    marquee {
-      font-family: 'Great Vibes', cursive;
-      font-size: 24px;
-      color: #DAA520;
-      background-color: #5c4033;
       padding: 10px;
-      border-radius: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #3366cc;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background-color: #264d99; }
+    .switch {
+      text-align: center;
+      color: #3366cc;
+      cursor: pointer;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
 
-  <button class="theme-toggle" onclick="toggleTheme()">Switch Theme</button>
+<div class="box">
+  <h2 id="title">Sign Up</h2>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+  <select id="role">
+    <option value="member">Member</option>
+    <option value="admin">Admin</option>
+  </select>
+  <button id="submit">Sign Up</button>
+  <div class="switch" onclick="toggle()">Already have an account? Log In</div>
+</div>
 
-  <marquee behavior="scroll" direction="left">Welcome to Elite Titans Login</marquee>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+  import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-database.js";
 
-  <div class="container" id="welcome-page">
-    <h2>Welcome!</h2>
-    <button class="btn" onclick="showPage('signup-page')">Sign Up</button>
-    <button class="btn" onclick="showPage('login-page')">Log In</button>
-  </div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAs6SuTkauJ_TSsWrcpbiLe0ae_86i90gs",
+    authDomain: "elitetitans-f6307.firebaseapp.com",
+    databaseURL: "https://elitetitans-f6307-default-rtdb.firebaseio.com",
+    projectId: "elitetitans-f6307",
+    storageBucket: "elitetitans-f6307.appspot.com",
+    messagingSenderId: "448495913827",
+    appId: "1:448495913827:web:95d594215781e2c803a156",
+    measurementId: "G-CWWJ70LMKK"
+  };
 
-  <div class="container hidden" id="signup-page">
-    <h2>Sign Up</h2>
-    <input type="email" id="signup-email" placeholder="Email" required>
-    <input type="password" id="signup-password" placeholder="Password" required>
-    <button class="btn" id="signup-btn">Sign Up</button>
-    <a href="javascript:void(0)" onclick="showPage('welcome-page')" class="back-btn">Back</a>
-  </div>
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
 
-  <div class="container hidden" id="login-page">
-    <h2>Log In</h2>
-    <input type="email" id="login-email" placeholder="Email" required>
-    <input type="password" id="login-password" placeholder="Password" required>
-    <button class="btn" id="login-btn">Log In</button>
-    <a href="javascript:void(0)" onclick="showPage('forgot-password-page')" class="back-btn">Forgot Password?</a><br>
-    <a href="javascript:void(0)" onclick="showPage('welcome-page')" class="back-btn">Back</a>
-  </div>
+  let loginMode = false;
 
-  <div class="container hidden" id="forgot-password-page">
-    <h2>Reset Password</h2>
-    <input type="email" id="reset-email" placeholder="Enter your email" required>
-    <button class="btn" id="reset-btn">Reset Password</button>
-    <a href="javascript:void(0)" onclick="showPage('login-page')" class="back-btn">Back</a>
-  </div>
+  document.getElementById("submit").addEventListener("click", () => {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value;
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    if (!email || !password) {
+      alert("Please fill all fields.");
+      return;
+    }
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCp_7_xqIG00Bs1gjtc7uJ7s07pVl9YSNI",
-      authDomain: "gen-lang-client-0390367057.firebaseapp.com",
-      projectId: "gen-lang-client-0390367057",
-      storageBucket: "gen-lang-client-0390367057.appspot.com",
-      messagingSenderId: "28571667369",
-      appId: "1:28571667369:web:5652c6d8cc5bf9e916d2b8",
-      measurementId: "G-NHR3JNZB4E"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    document.getElementById("signup-btn").addEventListener("click", () => {
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-
+    if (!loginMode) {
+      // SIGNUP
       createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          alert("Signup successful!");
-          window.location.href = 'what.html';
+        .then((userCred) => {
+          const uid = userCred.user.uid;
+          return set(ref(db, "users/" + uid), { email, role });
         })
-        .catch((error) => alert(error.message));
-    });
-
-    document.getElementById("login-btn").addEventListener("click", () => {
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-
+        .then(() => {
+          localStorage.setItem("email", email);
+          localStorage.setItem("role", role);
+          window.location.href = "dashboard.html";
+        })
+        .catch(err => alert("Signup Error: " + err.message));
+    } else {
+      // LOGIN
       signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          window.location.href = 'what.html';
+        .then((userCred) => {
+          const uid = userCred.user.uid;
+          return get(ref(db, "users/" + uid));
         })
-        .catch((error) => alert(error.message));
-    });
-
-    document.getElementById("reset-btn").addEventListener("click", () => {
-      const email = document.getElementById("reset-email").value;
-      sendPasswordResetEmail(auth, email)
-        .then(() => alert("Password reset email sent!"))
-        .catch((error) => alert(error.message));
-    });
-  </script>
-
-  <script>
-    function showPage(pageId) {
-      document.querySelectorAll('.container').forEach(div => div.classList.add('hidden'));
-      document.getElementById(pageId).classList.remove('hidden');
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            const { email, role } = snapshot.val();
+            localStorage.setItem("email", email);
+            localStorage.setItem("role", role);
+            window.location.href = "dashboard.html";
+          } else {
+            alert("User data not found in DB.");
+          }
+        })
+        .catch(err => alert("Login Error: " + err.message));
     }
+  });
 
-    function toggleTheme() {
-      document.body.classList.toggle("dark-theme");
-    }
-  </script>
+  window.toggle = () => {
+    loginMode = !loginMode;
+    document.getElementById("title").innerText = loginMode ? "Log In" : "Sign Up";
+    document.getElementById("submit").innerText = loginMode ? "Log In" : "Sign Up";
+    document.getElementById("role").style.display = loginMode ? "none" : "block";
+    document.querySelector(".switch").innerText = loginMode
+      ? "Don't have an account? Sign Up"
+      : "Already have an account? Log In";
+  };
+</script>
+
 </body>
 </html>
