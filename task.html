@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e4f5);
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #3b3b98;
+      margin-bottom: 30px;
+    }
+
+    .task-input-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    #taskInput {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #c7d2fe;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    #addTask {
+      padding: 12px 20px;
+      background-color: #6c63ff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #addTask:hover {
+      background-color: #574b90;
+    }
+
+    #taskList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #taskList li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #eef1fb;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    #taskList li.completed {
+      text-decoration: line-through;
+      color: #888;
+      background-color: #d3d8ec;
+    }
+
+    .complete-btn {
+      padding: 8px 14px;
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .complete-btn:hover {
+      background-color: #388e3c;
+    }
+
+    .points-container {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: #3b3b98;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Task Tracker</h1>
+
+    <div class="task-input-container">
+      <input type="text" id="taskInput" placeholder="Enter your task..." />
+      <button id="addTask">Add Task</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <div class="points-container">
+      Points: <span id="pointsDisplay">0</span>
+    </div>
+  </div>
+
+  <script>
+    let points = 0;
+    const pointsDisplay = document.getElementById('pointsDisplay');
+
+    document.getElementById('addTask').addEventListener('click', function () {
+      const taskInput = document.getElementById('taskInput');
+      const taskList = document.getElementById('taskList');
+
+      const taskText = taskInput.value.trim();
+      if (taskText === '') return;
+
+      const taskItem = document.createElement('li');
+      taskItem.textContent = taskText;
+
+      const completeButton = document.createElement('button');
+      completeButton.textContent = 'Complete';
+      completeButton.classList.add('complete-btn');
+
+      completeButton.addEventListener('click', function () {
+        taskItem.classList.toggle('completed');
+        if (taskItem.classList.contains('completed')) {
+          points += 10;
+        } else {
+          points -= 10;
+        }
+        pointsDisplay.textContent = points;
+      });
+
+      taskItem.appendChild(completeButton);
+      taskList.appendChild(taskItem);
+      taskInput.value = '';
+    });
+  </script>
+</body>
+</html>
